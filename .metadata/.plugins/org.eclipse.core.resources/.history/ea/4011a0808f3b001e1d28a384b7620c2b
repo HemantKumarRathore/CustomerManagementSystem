@@ -1,0 +1,235 @@
+package com.AmdocsTrainingProject.CustomerManagementSystem.DBA;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+public class DBConnection {
+	private static String jdbcurl="oracle.jdbc.driver.OracleDriver";
+	private static String connstring="jdbc:oracle:thin:@localhost:1521:XE";
+	private static String username="sys as sysdba";
+	private static String password="admin";
+	private static Connection con;
+	private static Statement stmt;
+	static {
+		try {
+			con= DriverManager.getConnection(connstring, username, password);
+			stmt = con.createStatement();
+		}
+		catch(Exception e) {
+			System.out.println("Connection not stabilished!!!");
+		}
+	}
+	public static boolean checkOwner(String ouid,String pass) {
+		boolean condition=false;
+		try {
+			
+			String qry="select * from owner where ouname='"+ouid+"' and opass='"+pass+"'";
+//			PreparedStatement pstm=con.prepareStatement(qry);
+//			pstm.setString(1, ouid);
+//			pstm.setString(2, pass);
+//			condition = pstm.execute(qry);
+			
+			
+//			return true;
+			
+			
+			ResultSet rs = stmt.executeQuery(qry);
+			condition=rs.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return condition;
+	}
+	public static String getOwnerName(String ouid,String pass) {
+		String sql="select oname, opriv from owner where ouname='"+ouid+"' and opass='"+pass+"'";
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			rs.next();
+			return rs.getString("oname");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static int getOwnerPriv(String ouid,String pass) {
+		String sql="select oname, opriv from owner where ouname='"+ouid+"' and opass='"+pass+"'";
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			rs.next();
+			return rs.getInt("opriv");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	public static void displayAllCustomer() {
+		String sql="Select * from customer";
+		
+		try {
+			ResultSet rs=stmt.executeQuery(sql);
+			boolean cond=rs.next();
+			if(cond) {
+				System.out.println("Customer ID \tCustomer Name \tCustomer Contact \tCustomer Address");
+				while(cond) {
+					System.out.println(rs.getInt(1)+" \t\t"+rs.getString(2)+" \t\t"+rs.getString(3)+" \t\t"+rs.getString(4));
+					cond=rs.next();
+				}
+			}else {
+				System.out.println("No data found!!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void displayCustomerById(int cid) {
+		String sql="select * from customer where cid='"+cid+"'";
+		try {
+			ResultSet rs=stmt.executeQuery(sql);
+			boolean cond=rs.next();
+			if(cond) {
+				System.out.println("Customer ID \tCustomer Name \tCustomer Contact \tCustomer Address");
+				while(cond) {
+					System.out.println(rs.getInt(1)+" \t\t"+rs.getString(2)+" \t\t"+rs.getString(3)+" \t\t"+rs.getString(4));
+					cond=rs.next();
+				}
+			}else {
+				System.out.println("No data found!!");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void displayCustomerByName(String name) {
+		String sql="select * from customer where cname='"+name+"'";
+		try {
+			ResultSet rs=stmt.executeQuery(sql);
+			boolean cond=rs.next();
+			if(cond) {
+				System.out.println("Customer ID \tCustomer Name \tCustomer Contact \tCustomer Address");
+				while(cond) {
+					System.out.println(rs.getInt(1)+" \t\t"+rs.getString(2)+" \t\t"+rs.getString(3)+" \t\t"+rs.getString(4));
+					cond=rs.next();
+				}
+			}else {
+				System.out.println("No data found!!");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void displayCustomerByCon(int contact) {
+		String sql="select * from customer where ccontact='"+contact+"'";
+		try {
+			ResultSet rs=stmt.executeQuery(sql);
+			boolean cond=rs.next();
+			if(cond) {
+				System.out.println("Customer ID \tCustomer Name \tCustomer Contact \tCustomer Address");
+				while(cond) {
+					System.out.println(rs.getInt(1)+" \t\t"+rs.getString(2)+" \t\t"+rs.getString(3)+" \t\t"+rs.getString(4));
+					cond=rs.next();
+				}
+			}else {
+				System.out.println("No data found!!");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void insert(String cName, int cContact, String cAddress) {
+		String sql="insert into customer values(cid_sequence.nextVal,'"+cName+"',"+cContact+",'"+cAddress+"')";
+		
+		try {
+			stmt.execute(sql);
+			System.out.println("New record inserted successfully!!!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static int delete(int id) {
+		String sql="delete from customer where cid="+id;
+		
+		try {
+			int num=stmt.executeUpdate(sql);
+			return num;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+		
+	}
+	
+	public static int updateName(int id,String name) {
+		String sql="update customer set cname='"+name+"' where cid="+id;
+		try {
+			int num=stmt.executeUpdate(sql);
+			return num;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static int updateContact(int id,int number) {
+		String sql="update customer set ccontact="+number+" where cid="+id;
+		try {
+			int num=stmt.executeUpdate(sql);
+			return num;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+
+	public static int updateAddress(int id,String address) {
+		String sql="update customer set caddres='"+address+"' where cid="+id;
+		try {
+			int num=stmt.executeUpdate(sql);
+			return num;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static void main(String args[]) {
+		System.out.println(checkOwner("own1","pass"));
+		displayAllCustomer();
+		displayCustomerById(21);
+		displayCustomerByName("Jack");
+		displayCustomerByCon(78598656);
+//		insert("Hemant",9856354,"Pune");
+		
+		displayAllCustomer();
+		
+		if(delete(23)>0) {
+			System.out.println("executed successfully");
+		}
+		
+		if(updateAddress(21, "Pune")>0) {
+			System.out.println("Updated succesfully!!!");
+		}else {
+			System.out.println("record not found!!!");
+		}
+		displayAllCustomer();
+	}
+	
+}

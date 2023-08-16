@@ -1,0 +1,450 @@
+package com.AmdocsTrainingProject.CustomerManagementSystem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import com.AmdocsTrainingProject.CustomerManagementSystem.DBA.DBConnection;
+import com.AmdocsTrainingProject.CustomerManagementSystem.temp.*;
+
+public class MainApp {
+static Scanner sc=new Scanner(System.in);
+	
+	static List<Customer> cs=new ArrayList<Customer>();
+	
+	static List<Owner> ow=new ArrayList<Owner>();
+	
+	static{
+		
+//		ow.add(new Owner(101,"Owner 1",4,"own1","pass"));
+//		ow.add(new Owner(102,"Owner 2",3,"own2","pass"));
+//		ow.add(new Owner(103,"Owner 3",2,"own3","pass"));
+//		ow.add(new Owner(104,"Owner 4",1,"own4","pass"));
+		
+		cs.add(new Customer(1001,"Jack",879023444,"pune"));
+		cs.add(new Customer(1002,"John",879023444,"pune"));   
+	}
+	
+	public static void main(String[] args) {
+		start();
+	}
+	public static void start(){
+		System.out.println("\n\nWelcome to Customer Management System:\n1. Login \t2. Exit");
+		while(true){
+			try{
+				int opt=sc.nextInt();
+				if(opt==1){
+					login();
+					break;
+				}else if(opt==2){
+					System.out.println("Thank you for visiting.");
+					System.exit(0);
+				}else{System.out.println("NOTE: Please enter number 1 or 2.");}
+			}
+			catch(Exception e){
+				System.out.println("NOTE: Please enter number 1 or 2.");
+				sc.nextLine();
+			}
+		}
+	}
+	
+	public static void login(){
+		boolean con=true;
+		int indx=-1;
+		while(con){
+			System.out.println("\nOwner Login=>");
+			System.out.print("User Id: ");
+			String oId=sc.next();
+			sc.nextLine();
+			System.out.print("Password: ");
+			String oPass=sc.next();
+//			System.out.println(oId+" "+oPass);
+			for(int i=0;i<ow.size();i++){
+				if(ow.get(i).oUserId.equals(oId) && ow.get(i).oPass.equals(oPass)){
+//					System.out.println("working");
+					con=false;
+					indx=i;
+					break;
+				}
+			}
+			if(DBConnection.checkOwner(oId, oPass)){
+				System.out.println("\nHi "+DBConnection.getOwnerName(oId, oPass)+",");
+				switch(DBConnection.getOwnerPriv(oId, oPass)){
+				case 1: zeroPriv();
+					break;
+		
+				case 2: onePriv();
+					break;
+
+				case 3: twoPriv();
+					break;
+				default: System.out.println("You have not assigned any access. Please contact Admin.");
+					break;
+			}
+				break;
+			}
+			System.out.println("You have entered wrong credentials.\n"+
+					"Do you want to re-Try:\n1.yes\n2.no\n"+
+					"(NOTE: Please enter number 1, 2 or 3 only.)");
+			int tempNum = 2;
+			
+			while(true){
+				try{
+					tempNum=sc.nextInt();
+					if(tempNum==1){
+						break;
+					}else if(tempNum==2){
+						con=false;
+						start();
+						break;
+					}else{
+						System.out.println("NOTE: Please enter number 1, 2 or 3 only.");
+					}
+				}
+				catch(Exception e){
+					System.out.println("NOTE: Please enter number 1, 2 or 3 only.");
+					sc.nextLine();
+				}
+				
+			}
+		}
+	}
+	public static void zeroPriv(){
+		boolean con=true;
+		while(con){
+			System.out.println("Available options: \n1. View All Customer details \n" +
+					"2. View Customer details.\n" +
+					"3. LogOut");
+			int tNum;
+			try{
+				tNum=sc.nextInt();
+				if(tNum==1){
+					
+					DBConnection.displayAllCustomer();
+					System.out.println();
+					
+				}else if(tNum==2){
+					
+					viewCustomerDetails();
+					System.out.println();
+					
+				}else if(tNum==3){
+					start();
+					con=false;
+				}else{
+					System.out.println("Please enter number 1, 2 or 3.");
+				}
+			}
+			catch(Exception e){
+				System.out.println("Please enter number 1, 2 or 3.");
+			}
+		}
+	}
+	public static void onePriv() {
+		boolean con=true;
+		while(con){
+			System.out.println("Available options: \n1. View All Customer details \n" +
+					"2. View Customer details.\n" +
+					"3. Insert Customer\n" +
+					"4. Update\n"+
+					"5. LogOut");
+			int tNum;
+			try{
+				tNum=sc.nextInt();
+				if(tNum==1){
+					
+					DBConnection.displayAllCustomer();
+					System.out.println();
+					
+				}else if(tNum==2){
+					
+					viewCustomerDetails();
+					System.out.println();
+					
+				}else if(tNum==3){
+					
+					insertCustomer();
+					
+				}else if(tNum==4){
+					
+					update();
+					
+				}else if(tNum==5){
+					start();
+					con=false;
+				}else{
+					System.out.println("Please enter number 1, 2, 3 or 4.");
+				}
+			}
+			catch(Exception e){
+				System.out.println("Please enter number 1, 2, 3, or 4.");
+			}
+		}
+	}
+	public static void twoPriv() {
+		boolean con=true;
+		while(con){
+			System.out.println("Available options: \n1. View All Customer details \n" +
+					"2. View Customer details.\n" +
+					"3. Insert Customer\n" +
+					"4. Update\n" +
+					"5. Delete\n"+
+					"6. LogOut");
+			int tNum;
+			try{
+				tNum=sc.nextInt();
+				if(tNum==1){
+					
+					DBConnection.displayAllCustomer();
+					System.out.println();
+					
+				}else if(tNum==2){
+					
+					viewCustomerDetails();
+					System.out.println();
+					
+				}else if(tNum==3){
+					
+					insertCustomer();
+					
+				}else if(tNum==4){
+					
+					update();
+					
+				}else if(tNum==5){
+					
+					delete();
+					
+				}else if(tNum==6){
+					start();
+					con=false;
+				}else{
+					System.out.println("Please enter number 1, 2, 3 or 4.");
+				}
+			}
+			catch(Exception e){
+				System.out.println("Please enter number 1, 2 3, or 4.");
+			}
+		}
+	}
+	
+	public static void viewCustomerDetails(){
+//		System.out.println();
+//		DBConnection.displayAllCustomer();
+		System.out.println("\nOn what basis you want to search? choose:\n" +
+				"1. Customer Id \t 2. Customer Name \t 3. Customer Contact");
+		try{
+			int op=sc.nextInt();
+			if(op==1){
+				int cusId;
+				System.out.print("Customer ID=>");
+				while(true) {
+					try{
+						cusId=sc.nextInt();
+						DBConnection.displayCustomerById(cusId);
+						break;
+	//					System.out.println();
+					}
+					catch(Exception e){
+						System.out.println("Please Enter numbers only!!!");
+						sc.nextLine();
+					}
+				}
+			}else if(op==2){
+				System.out.print("Customer Name=>");
+				String tName=sc.next();
+				sc.nextLine();
+				DBConnection.displayCustomerByName(tName);
+//				System.out.println();
+			}else if(op==3){
+				System.out.print("Customer Contact=>");
+				while(true) {
+					try{	
+						int tContact=sc.nextInt();
+						DBConnection.displayCustomerByCon(tContact);
+						break;
+	//					System.out.println();
+					}
+					catch(Exception e){
+						System.out.println("Please Enter numbers.");
+						sc.nextLine();
+					}
+				}
+			}else{
+				System.out.println("Please enter number 1, 2 or 3.");
+			}
+		}
+		catch(Exception e){
+			System.out.println("Please enter number 1, 2 or 3.");
+		}
+	}
+	
+	public static void insertCustomer(){
+		int contact;
+		String name,address;
+		System.out.print("Enter name=>");
+		name=sc.next();
+		sc.nextLine();
+		System.out.print("Enter contact=>");
+		while(true){
+			try{
+				contact=sc.nextInt();
+				break;
+			}
+			catch(Exception e){
+				System.out.println("NOTE: Contact filed accepts numbers only.");
+				sc.nextLine();
+			}
+		}
+		System.out.print("Enter address=>");
+		address=sc.next();
+		sc.nextLine();
+		System.out.println("Do you really want to insert?" +
+				"\n1. Yes\t2.No\n(Please enter 1 or 2)");
+		int num;
+		while(true){
+			try{
+				num=sc.nextInt();
+				if(num>2 && num<1){
+					System.out.println("Please enter 1 or 2");
+					continue;
+				}else{
+					break;
+				}
+			}
+			catch(Exception e){
+				System.out.println("Please enter 1 or 2");
+			}
+		}
+		if(num==1){
+			DBConnection.insert(name, contact, address);
+			DBConnection.displayAllCustomer();
+		}
+		System.out.println();
+	}
+	public static void update() {
+		
+		System.out.println("\n Update:\n1. Customer Name\t2. Customer Contact\t3. Customer Address");
+		int temp = 0;
+		
+		while(true) {
+			try {
+				temp=sc.nextInt();
+				if(temp>3 && temp<1) {
+					System.out.println("Update option only accepts 1, 2, or 3.");
+				}else {
+					break;
+				}
+			}
+			catch(Exception e) {
+				System.out.println("Update option only accepts 1, 2, or 3.");
+			}
+		}
+		
+		int id=-1;
+		System.out.print("Please Enter Customer ID:");
+		while(true) {
+			try {
+				id=sc.nextInt();
+				break;
+			}
+			catch(Exception e) {
+				System.out.println("NOTE(ID): Please enter number only");
+				sc.nextLine();
+			}
+		}
+//		int idx=-1;
+		
+		if(DBConnection.checkIdInDb(id)) {
+			if(temp==1) {
+				System.out.print("Enter name=>");
+				String newName=sc.next();
+				sc.nextLine();
+	//				DBConnection.displayAllCustomer();
+				if(DBConnection.updateName(id, newName)>0) {
+					System.out.println("Data updated successfully!!!");
+					DBConnection.displayCustomerById(id);;
+					System.out.println();
+				}else {
+					System.out.println("Data not found!!!\n");
+				}
+			}else if(temp==2) {
+				System.out.print("Enter contact=>");
+				int cnum=0;
+				while(true) {
+					try {
+						cnum=sc.nextInt();
+						break;
+					}
+					catch(Exception e) {
+						System.out.println("Contact only accepts numbers only");
+						sc.nextLine();
+					}
+				}
+	//				DBConnection.displayAllCustomer();
+				if(DBConnection.updateContact(id, cnum)>0) {
+					System.out.println("Data updated successfully!!!");
+					DBConnection.displayCustomerById(id);
+					System.out.println();
+				}else {
+					System.out.println("Data not found!!!\n");
+				}
+			}else {
+				System.out.print("Enter address=>");
+				String newAddress=sc.next();
+				sc.nextLine();
+	//				DBConnection.displayAllCustomer();
+				if(DBConnection.updateAddress(id, newAddress)>0) {
+					System.out.println("Data updated successfully!!!");
+					DBConnection.displayCustomerById(id);
+					System.out.println();
+				}else {
+					System.out.println("Data not found!!!\n");
+				}
+			}
+		}else {
+			System.out.println("No record found for id:"+id+"\n");
+		}
+	}
+	
+	public static void delete() {
+		System.out.print("\nPlease enter Customer ID:");
+		int id=-1;
+		while(true) {
+			try {
+				id=sc.nextInt();
+				break;
+			}
+			catch(Exception e) {
+				System.out.println("NOTE: ID accepts numbers only.");
+				sc.nextLine();
+			}
+		}
+		System.out.println("Do you really want to delete?" +
+				"\n1. Yes\t2.No\n(Please enter 1 or 2)");
+		int num;
+		while(true){
+			try{
+				num=sc.nextInt();
+				if(num>2 && num<1){
+					System.out.println("Please enter 1 or 2");
+					continue;
+				}else{
+					break;
+				}
+			}
+			catch(Exception e){
+				System.out.println("Please enter 1 or 2");
+			}
+		}
+		
+		if(num==1 && DBConnection.delete(id)>0) {
+			System.out.println("Data deleted successfully\n");
+			DBConnection.displayAllCustomer();
+			System.out.println();
+		}else {
+			System.out.println("Record not found!!!\n");
+		}
+	}
+	
+}
